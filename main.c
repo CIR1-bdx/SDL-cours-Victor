@@ -124,9 +124,6 @@ void contentMain(SDL_Renderer *renderer)
 
 }
 
-void drawTitle(SDL_Renderer* renderer, Title* titleStruct) {
-    TTF_Font* font = TTF_OpenFont("Baloo-Regular.ttf", 40);
-    if (font == NULL) {
 int main(int argc, char *argv[])
 {
     // Initialize SDL
