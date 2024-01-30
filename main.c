@@ -38,12 +38,12 @@ typedef struct Page
     SDL_Rect Button[5];
 }Page;
 
-void generateTitle();
-void generateText();
-void generateImage();
-void generateButtons();
+void drawTitle();
+void drawText();
+void drawImage();
+void drawButtons();
 void completeRenderer();
-void generateHomeButton();
+void drawHomeButton();
 
 void principalPage(SDL_Renderer *renderer)
 {
