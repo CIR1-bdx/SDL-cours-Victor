@@ -82,7 +82,31 @@ void drawText(Page page, SDL_Renderer *rend){
     TTF_CloseFont(font);
 }
 
-void drawImage();
+void drawImage(const char* image_path){
+    // Load the image
+    SDL_Surface* image_surface = IMG_Load(image_path);
+    if (!image_surface)
+    {
+        printf("Error loading image: %s\n", IMG_GetError());
+        return;
+    }
+    // crée une texture dans la surface
+    if (texture)
+    {
+        SDL_DestroyTexture(texture);
+    }
+    texture = SDL_CreateTextureFromSurface(renderer, image_surface);
+    SDL_FreeSurface(image_surface);
+    // prends dimension de la texture
+    int width, height;
+    SDL_QueryTexture(texture, NULL, NULL, &width, &height);
+
+    // Défini  de destination du rectangle pour centrer l’image sur l’écran
+    dest_rect.x = (WIDTH - width) / 2;
+    dest_rect.y = (HEIGHT - height) / 2;
+    dest_rect.w = width;
+    dest_rect.h = height;
+}
 
 void drawButtons();
 void completeRenderer();
