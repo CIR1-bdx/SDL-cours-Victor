@@ -9,6 +9,22 @@
 #define NAMEWINDOW "SDL Cours de victor"
 #define FONTPATHPAGE "./Roboto-Regular.ttf"
 
+typedef struct Page
+{
+    char title[1024];
+    char contentText[1024];
+    char pathImage[1024];
+    SDL_Rect Button[5];
+}Page;
+
+void contentMain(SDL_Renderer *renderer)
+{
+    SDL_RenderClear(renderer);
+    SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
+
+    SDL_RenderPresent(renderer);
+}
+
 int main(int argc, char *argv[])
 {
     // Initialize SDL
@@ -17,18 +33,14 @@ int main(int argc, char *argv[])
         SDL_Log("Unable to initialize SDL: %s", SDL_GetError());
         return 1;
     }
-
     if (TTF_Init() == -1)
     {
         SDL_Log("TTF_Init: %s\n", TTF_GetError());
-        // handle error
     }
-
     TTF_Font *font = TTF_OpenFont(FONTPATHPAGE, 24); // Modify the path and size
     if (!font)
     {
         SDL_Log("TTF_OpenFont: %s\n", TTF_GetError());
-        // handle error
     }
 
     // Create a window
@@ -41,7 +53,6 @@ int main(int argc, char *argv[])
         SDL_Quit();
         return 1;
     }
-
     SDL_Renderer *renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
     if (!renderer)
     {
@@ -66,7 +77,7 @@ int main(int argc, char *argv[])
                 break;
             }
         }
-
+        contentMain(renderer);
     }
 
     // Cleanup
