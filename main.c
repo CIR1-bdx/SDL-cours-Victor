@@ -39,8 +39,27 @@ typedef struct Page
 }Page;
 
 void drawTitle();
-void drawText();
+void drawText(Page page){
+    char* txt = page.contentText.contentText
+    TTF_Font *font = TTF_OpenFont(FONTPATHPAGE, FONTSIZECONTENT);
+    SDL_Color textColor = {255, 255, 255, 255};
+
+    SDL_Surface *surface_text = TTF_RenderText_Solid(font, txt, textColor);
+    SDL_Texture *texture_text = SDL_CreateTextureFromSurface(rend, surface_text);
+
+    int text_width = surface_text->w;
+    int text_height = surface_text->h;
+    SDL_FreeSurface(surface_text);
+
+    SDL_Rect renderQuad_text = {100, 300, text_width, text_height};
+    SDL_RenderCopy(rend, texture_text, NULL, &renderQuad_text);
+
+    SDL_DestroyTexture(texture_text);
+    TTF_CloseFont(font);
+}
+
 void drawImage();
+
 void drawButtons();
 void completeRenderer();
 void drawHomeButton();
