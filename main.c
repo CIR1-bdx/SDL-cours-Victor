@@ -9,11 +9,28 @@
 #define NAMEWINDOW "SDL Cours de victor"
 #define FONTPATHPAGE "./Roboto-Regular.ttf"
 
+typedef struct Title{
+    char title[1024];
+    int y;
+}Title;
+
+typedef struct ContentText{
+    char contentText[1024];
+    int y;
+    int x;
+}ContentText;
+
+typedef struct PathImage{
+    char contentText[1024];
+    int y;
+    int x;
+}PathImage;
+
 typedef struct Page
 {
-    char title[1024];
-    char contentText[1024];
-    char pathImage[1024];
+    Title title;
+    ContentText contentText;
+    PathImage pathImage;
     SDL_Rect Button[5];
 }Page;
 
