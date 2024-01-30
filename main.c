@@ -24,7 +24,7 @@ int main(int argc, char *argv[])
         // handle error
     }
 
-    TTF_Font *font = TTF_OpenFont("ALEF-REGULAR", 24); // Modify the path and size
+    TTF_Font *font = TTF_OpenFont("ALEF-REGULAR.ttf", 24); // Modify the path and size
     if (!font)
     {
         SDL_Log("TTF_OpenFont: %s\n", TTF_GetError());
