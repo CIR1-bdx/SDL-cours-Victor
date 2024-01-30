@@ -8,6 +8,10 @@
 #define WINDOWWIDTH 1200
 #define NAMEWINDOW "SDL Cours de victor"
 #define FONTPATHPAGE "./Roboto-Regular.ttf"
+#define FONTSIZETITLE 24
+#define FONTSIZECONTENT 16
+
+int nbPage = 0;
 
 typedef struct Title{
     char title[1024];
@@ -34,10 +38,25 @@ typedef struct Page
     SDL_Rect Button[5];
 }Page;
 
+void principalPage(SDL_Renderer *renderer)
+{
+
+    SDL_Rect rect = {0, 0, 100, 100};
+
+    SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
+    SDL_RenderFillRect(renderer, &rect);
+}
+
 void contentMain(SDL_Renderer *renderer)
 {
+    int a = 1;
     SDL_RenderClear(renderer);
     SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
+
+    if (a == 0)
+    {
+        principalPage(renderer);
+    }
 
     SDL_RenderPresent(renderer);
 }
