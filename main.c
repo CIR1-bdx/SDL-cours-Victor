@@ -7,6 +7,7 @@
 #define WINDOWHEIGHT 900
 #define WINDOWWIDTH 1200
 #define NAMEWINDOW "SDL Cours de victor"
+#define FONTPATHPAGE "./Roboto-Regular.ttf"
 
 int main(int argc, char *argv[])
 {
@@ -23,7 +24,7 @@ int main(int argc, char *argv[])
         // handle error
     }
 
-    TTF_Font *font = TTF_OpenFont("./Roboto-Regular.ttf", 24); // Modify the path and size
+    TTF_Font *font = TTF_OpenFont(FONTPATHPAGE, 24); // Modify the path and size
     if (!font)
     {
         SDL_Log("TTF_OpenFont: %s\n", TTF_GetError());
