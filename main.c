@@ -15,7 +15,7 @@ int nbPage = 0;
 
 typedef struct Title{
     char title[1024];
-    int y;
+    int y = 80 ;
 }Title;
 
 typedef struct ContentText{
@@ -38,7 +38,31 @@ typedef struct Page
     SDL_Rect Button[5];
 }Page;
 
-void drawTitle();
+void drawTitle(SDL_Renderer* renderer, Title* titleStruct) {
+    TTF_Font* font = TTF_OpenFont("Baloo-Regular.ttf", 40);
+    if (font == NULL) {
+        printf("Failed to load font: %s\n", TTF_GetError());
+        return;
+    }
+
+    SDL_Color textColor = {255, 255, 255};
+    SDL_Color bgColor = {0, 0, 0};
+    SDL_Surface* surface = TTF_RenderText_Shaded(font, titleStruct->title, textColor, bgColor);
+
+    SDL_Texture* texture = SDL_CreateTextureFromSurface(renderer, surface);
+    int textWidth = surface->w;
+    int textHeight = surface->h;
+
+    SDL_FreeSurface(surface);
+
+    SDL_GetRendererOutputSize(renderer, &WINDOWWIDTH, &WINDOWHEIGHT);
+
+    SDL_Rect renderQuad = {(WINDOWWIDTH - textWidth) / 2, titleStruct->y , textWidth, textHeight};
+    SDL_RenderCopy(renderer, texture, NULL, &renderQuad);
+    SDL_DestroyTexture(texture);
+    TTF_CloseFont(font);
+}
+
 void drawText(Page page, SDL_Renderer *rend){
     char* txt = page.contentText.contentText;
     TTF_Font *font = TTF_OpenFont(FONTPATHPAGE, FONTSIZECONTENT);
@@ -97,8 +121,12 @@ void contentMain(SDL_Renderer *renderer)
     }
 
     SDL_RenderPresent(renderer);
+
 }
 
+void drawTitle(SDL_Renderer* renderer, Title* titleStruct) {
+    TTF_Font* font = TTF_OpenFont("Baloo-Regular.ttf", 40);
+    if (font == NULL) {
 int main(int argc, char *argv[])
 {
     // Initialize SDL
