@@ -39,8 +39,8 @@ typedef struct Page
 }Page;
 
 void drawTitle();
-void drawText(Page page){
-    char* txt = page.contentText.contentText
+void drawText(Page page, SDL_Renderer *rend){
+    char* txt = page.contentText.contentText;
     TTF_Font *font = TTF_OpenFont(FONTPATHPAGE, FONTSIZECONTENT);
     SDL_Color textColor = {255, 255, 255, 255};
 
@@ -64,11 +64,25 @@ void drawButtons();
 void completeRenderer();
 void drawHomeButton();
 
+SDL_Rect principalPageButton;
+
 void principalPage(SDL_Renderer *renderer)
 {
-    // SDL_Set
-    SDL_Rect rect = {100, 100, 50, 50};
-    SDL_RenderFillRect(renderer, &rect);
+    int x = 20;
+    int y = 50;
+    for (int i = 1; i < nbPage+1; i++)
+    {
+        principalPageButton.x = x;
+        principalPageButton.y = y;
+        principalPageButton.w = 150;
+        principalPageButton.h = 80;
+
+        SDL_SetRenderDrawColor(renderer, 0, 0, 255, 255);
+        SDL_RenderFillRect(renderer, &principalPageButton);
+
+        if (i%6 == 0) { y += 200; x = 20;}
+        else {x += 200;}
+    }
 }
 
 void contentMain(SDL_Renderer *renderer)
