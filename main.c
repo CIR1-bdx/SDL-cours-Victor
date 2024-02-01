@@ -11,7 +11,8 @@
 #define FONTSIZETITLE 24
 #define FONTSIZECONTENT 16
 
-int nbPage = 0;
+
+int nbPage = 10;
 
 typedef struct Title{
     char title[1024];
@@ -22,10 +23,13 @@ typedef struct ContentText{
     char contentText[1024];
     int y;
     int x;
+    SDL_Surface *surface_text;
+    SDL_Texture *texture_text;
+    SDL_Rect renderQuad;
 }ContentText;
 
 typedef struct PathImage{
-    char contentText[1024];
+    char pathImage[1024];
     int y;
     int x;
 }PathImage;
@@ -35,27 +39,20 @@ typedef struct Page
     Title title;
     ContentText contentText;
     PathImage pathImage;
-    SDL_Rect Button[5];
+    SDL_Rect Buttons[5];
 }Page;
 
+Page page;
+
+
+
+
+
 void drawTitle();
-void drawText(Page page, SDL_Renderer *rend){
-    char* txt = page.contentText.contentText;
-    TTF_Font *font = TTF_OpenFont(FONTPATHPAGE, FONTSIZECONTENT);
-    SDL_Color textColor = {255, 255, 255, 255};
 
-    SDL_Surface *surface_text = TTF_RenderText_Solid(font, txt, textColor);
-    SDL_Texture *texture_text = SDL_CreateTextureFromSurface(rend, surface_text);
-
-    int text_width = surface_text->w;
-    int text_height = surface_text->h;
-    SDL_FreeSurface(surface_text);
-
-    SDL_Rect renderQuad_text = {100, 300, text_width, text_height};
-    SDL_RenderCopy(rend, texture_text, NULL, &renderQuad_text);
-
-    SDL_DestroyTexture(texture_text);
-    TTF_CloseFont(font);
+void drawText(SDL_Renderer *renderer, int indexPage)
+{
+    SDL_RenderCopy(renderer, page.contentText.texture_text, NULL, &page.contentText.renderQuad);
 }
 
 void drawImage();
@@ -68,35 +65,51 @@ SDL_Rect principalPageButton;
 
 void principalPage(SDL_Renderer *renderer)
 {
-    int x = 20;
-    int y = 50;
+    int x = 50;
+    int y = 100;
     for (int i = 1; i < nbPage+1; i++)
     {
         principalPageButton.x = x;
         principalPageButton.y = y;
-        principalPageButton.w = 150;
+        principalPageButton.w = 200;
         principalPageButton.h = 80;
 
         SDL_SetRenderDrawColor(renderer, 0, 0, 255, 255);
         SDL_RenderFillRect(renderer, &principalPageButton);
 
-        if (i%6 == 0) { y += 200; x = 20;}
-        else {x += 200;}
+        TTF_Font *font = TTF_OpenFont(FONTPATHPAGE, FONTSIZECONTENT);
+        SDL_Color textColor = {0, 0, 0, 255};
+        SDL_Surface *surface = TTF_RenderText_Solid(font, "TITLE", textColor);
+        SDL_Texture *texture = SDL_CreateTextureFromSurface(renderer, surface);
+
+        int text_width = surface->w;
+        int text_height = surface->h;
+        SDL_FreeSurface(surface);
+
+        SDL_Rect renderQuad = {x + 20, principalPageButton.y + text_height, text_width, text_height};
+        SDL_RenderCopy(renderer, texture, NULL, &renderQuad);
+
+        if (i%4 == 0) { y += 200; x = 50;}
+        else {x += 300;}
     }
+
 }
+
 
 void contentMain(SDL_Renderer *renderer)
 {
-    int a = 1;
     SDL_RenderClear(renderer);
+
+    principalPage(renderer);
+
     SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
-
-    if (a == 0)
-    {
-        principalPage(renderer);
-    }
-
     SDL_RenderPresent(renderer);
+}
+
+int initializePages(SDL_Renderer *renderer, Page *pages[])
+{
+    page.contentText.surface_text = TTF_RenderText_Solid(TTF_OpenFont(FONTPATHPAGE, FONTSIZECONTENT), page.contentText.contentText, (SDL_Color){0, 0, 0, 255});
+    page.contentText.texture_text = SDL_CreateTextureFromSurface(renderer, page.contentText.surface_text);
 }
 
 int main(int argc, char *argv[])
@@ -111,8 +124,13 @@ int main(int argc, char *argv[])
     {
         SDL_Log("TTF_Init: %s\n", TTF_GetError());
     }
-    TTF_Font *font = TTF_OpenFont(FONTPATHPAGE, 24); // Modify the path and size
-    if (!font)
+    TTF_Font *fontTitle = TTF_OpenFont(FONTPATHPAGE, FONTSIZETITLE); // Modify the path and size
+    if (!fontTitle)
+    {
+        SDL_Log("TTF_OpenFont: %s\n", TTF_GetError());
+    }
+    TTF_Font *fontContent = TTF_OpenFont(FONTPATHPAGE, FONTSIZECONTENT); // Modify the path and size
+    if (!fontContent)
     {
         SDL_Log("TTF_OpenFont: %s\n", TTF_GetError());
     }
@@ -136,9 +154,11 @@ int main(int argc, char *argv[])
         return 1;
     }
 
+    int indexPage = 0;
 
     SDL_Event event;
     int running = 1;
+
 
     while (running)
     {
@@ -152,6 +172,7 @@ int main(int argc, char *argv[])
             }
         }
         contentMain(renderer);
+        SDL_Delay(1000 / 1000);
     }
 
     // Cleanup
