@@ -17,10 +17,13 @@ int nbPage = 10;
 typedef struct Title{
     char title[1024];
     int y;
+    SDL_Surface *surface_text;
+    SDL_Texture *texture_text;
+    SDL_Rect renderQuad;
 }Title;
 
 typedef struct ContentText{
-    char contentText[1024];
+    char contentText[2028];
     int y;
     int x;
     SDL_Surface *surface_text;
@@ -32,6 +35,7 @@ typedef struct PathImage{
     char pathImage[1024];
     int y;
     int x;
+    SDL_Texture *texture_image;
 }PathImage;
 
 typedef struct Page
@@ -106,10 +110,22 @@ void contentMain(SDL_Renderer *renderer)
     SDL_RenderPresent(renderer);
 }
 
-int initializePages(SDL_Renderer *renderer, Page *pages[])
+int initializePages(SDL_Renderer *renderer, Page *pages[], SDL_Color color, TTF_Font *fontTitle, TTF_Font *fontContent)
 {
-    page.contentText.surface_text = TTF_RenderText_Solid(TTF_OpenFont(FONTPATHPAGE, FONTSIZECONTENT), page.contentText.contentText, (SDL_Color){0, 0, 0, 255});
-    page.contentText.texture_text = SDL_CreateTextureFromSurface(renderer, page.contentText.surface_text);
+    for (int i = 0; i < nbPage; i++)
+    {
+        pages[i]->title.surface_text = TTF_RenderText_Solid(fontTitle, pages[i]->title.title, color);
+        pages[i]->title.texture_text = SDL_CreateTextureFromSurface(renderer, pages[i]->title.surface_text);
+        SDL_Rect renderQuad = {WINDOWWIDTH/2 - pages[i]->title.surface_text->w/2, pages[i]->title.y, pages[i]->title.surface_text->w, pages[i]->title.surface_text->h};
+
+        pages[i]->contentText.surface_text = TTF_RenderText_Solid(fontContent, pages[i]->contentText.contentText, color);
+        pages[i]->contentText.texture_text = SDL_CreateTextureFromSurface(renderer, pages[i]->contentText.surface_text);
+        SDL_Rect renderQuad = {pages[i]->contentText.x, pages[i]->contentText.y, pages[i]->contentText.surface_text->w, pages[i]->contentText.surface_text->h};
+        pages[i]->contentText.renderQuad = renderQuad;
+
+        SDL_Surface *surface = IMG_Load(pages[i]->pathImage.pathImage);
+        pages[i]->pathImage.texture_image = SDL_CreateTextureFromSurface(renderer, surface);
+    }
 }
 
 int main(int argc, char *argv[])
@@ -134,6 +150,7 @@ int main(int argc, char *argv[])
     {
         SDL_Log("TTF_OpenFont: %s\n", TTF_GetError());
     }
+    SDL_Color textColor = {0, 0, 0, 255}; // Black color
 
     // Create a window
     SDL_Window *window = SDL_CreateWindow(NAMEWINDOW,
@@ -158,6 +175,10 @@ int main(int argc, char *argv[])
 
     SDL_Event event;
     int running = 1;
+
+    Page pages[1024];
+    read_pages(pages);
+    initializePages(renderer, &pages, textColor, fontTitle, fontContent);
 
 
     while (running)
