@@ -4,6 +4,8 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include "sv_reader.c"
+
 #define WINDOWHEIGHT 900
 #define WINDOWWIDTH 1200
 #define NAMEWINDOW "SDL Cours de victor"
@@ -34,11 +36,16 @@ typedef struct PathImage{
     int x;
 }PathImage;
 
+typedef struct Link{
+    char link[1024];
+}Link;
+
 typedef struct Page
 {
     Title title;
     ContentText contentText;
     PathImage pathImage;
+    Link link;
     SDL_Rect Buttons[5];
 }Page;
 
